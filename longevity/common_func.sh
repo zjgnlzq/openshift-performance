@@ -5,20 +5,28 @@
 # Author:        <nsun@redhat.com> 
 # Description:   provide the common fucntion for all test cases
 # Version:       1.0
-# Function List: kill_process; end_test; run; error; info; check_point; sysinfo
-#    kill_process: Kill the process base on passed  parameter.
-#    target_reboot: Reboot tested machine when current running failed. 
-#    run:        print the info for the command and execute the command
-#    error:      print the error infomation with standard format
-#    info:       print some infomation with (INFO) tag
-#    sysinfo:    profile the system information
+#-------------------------------------------------------------------------------
+# Function List:
+#scp_task            scp file or direcotry to target machine.
+#task_ssh_root       ssh login target machine to trigger script or command
+#kill_process:       Kill the process base on passed  parameter.
+#target_reboot:      Reboot tested machine when current running failed. 
+#echo_red            red echo
+#echo_blue           blue echo
+#echo_green          green echo
+#echo_yellow         yellow echo
+#echo_pink           pink echo
+#echo_bold           blod echo
+#run:                print the info for the command and execute the command
+#sysinfo             print system info
+#-------------------------------------------------------------------------------
 # History:       Revision history
 #################################################################################
 
 export PATH=/sbin:/usr/sbin:/bin:$PATH
 
 #################################################################################
-#$0 $(file or direcotry) $ip $pasword $(source directory)
+#$0 $(source file or direcotry) $ip $pasword $(target directory)
 #################################################################################
 scp_task()
 {
@@ -153,29 +161,6 @@ function run()
         echo_green "$1 function running end!"
     fi
 	echo 
-}
-
-#################################################################################
-# Function:    task_scp
-# Description: Auto scp file to target machine
-# Input:       file user@target_ip:/dir/
-# Output:      none
-# Return:      none
-# Others:      none
-#################################################################################
-function task_scp()
-{
-	#expect is a software suite for automating interactive tools
-expect -f - <<EOF
-set timeout 6000
-spawn scp -r $1 $2@$3:$4
-expect {
-	"Are you sure you want to continue connecting (yes/no)?" { send "yes\r" ; exp_continue }
-	"assword:" { send "$5\r"; exp_continue }
-	eof	{ send_user "eof" }
-}
-wait
-EOF
 }
 
 #################################################################################
