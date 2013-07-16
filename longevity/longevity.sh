@@ -21,15 +21,15 @@ app_create_all()
 					echo "Cron-1.4 is not support jbosseap-6.0"
 				elif [ "$scale" = "off" ];then
 					run app_create $app
-					run url_check $app_name
+					#run url_check $app_name
 					run cartridge_add $cartridge_type $app_name
-					run url_check $app_name
+					#run url_check $app_name
 					echo "$app_name			$cartridge_type				nonscalable		$(date +%Y%m%d-%H%M%S)" >> $log
 				else
 					run app_create $app -s
-					run url_check $app_name
+					#run url_check $app_name
 					run cartridge_add $cartridge_type $app_name
-					run url_check $app_name
+					#run url_check $app_name
 					echo "$app_name			$cartridge_type				scalable		$(date +%Y%m%d-%H%M%S)" >> $log
 				fi
 			done
