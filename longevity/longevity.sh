@@ -26,7 +26,7 @@ app_create_all()
 					echo "$app_name		$cartridge_type			noscalable		$(date +%Y%m%d-%H%M%S)" >> $log
 				else
 					run app_create $app -s
-					run cartridge_add $cartridge_type $app
+					run cartridge_add $cartridge_type $app_name
 					echo "$app_name		$cartridge_type			scalable			$(date +%Y%m%d-%H%M%S)" >> $log
 				fi
 			done
