@@ -1,6 +1,5 @@
 #!/bin/bash
 . ../common_func.sh
-
 server_config()
 {
 if [ -f server.conf ];then
@@ -33,7 +32,7 @@ echo -n "If these info is all right, please input 'yes' to continue: (yes/no)"
 read yes
 if [ "$yes" = "yes" ];then
 	while read server_alias server_ip server_passwd;do
-		run scp_task "record.sh" $server_ip $server_passwd "/opt"
+		run scp_task "monitor-localhost.sh" $server_ip $server_passwd "/opt"
 	done < server.conf
 else 
 	echo "Please run it again!"
@@ -47,6 +46,6 @@ tail -f $1|while read app_info;do
 	echo_blue "New app created, app info: $app_info"
 	while read server_alias server_ip server_passwd;do
 	echo_green "####################### $server_alias INFO #######################"
-	run task_ssh_root $server_ip $server_passwd "/opt/record.sh"
+	run task_ssh_root $server_ip $server_passwd "/opt/monitor-localhost.sh"
 	done < server.conf
 done

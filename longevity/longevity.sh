@@ -3,6 +3,7 @@ app_type=$1
 pwd=$(pwd)
 time=$(date +%Y%m%d-%H%M%S)
 log="$pwd/${0%.*}_${time}.log"
+cycle_log="$pwd/cycle_$time.log"
 
 #no parameter
 app_create_all()
@@ -23,11 +24,11 @@ app_create_all()
 					run url_check $app_name
 					run cartridge_add $cartridge_type $app_name
 					run url_check $app_name
-					echo "$app_name		$cartridge_type			noscalable		$(date +%Y%m%d-%H%M%S)" >> $log
+					echo "$app_name			$cartridge_type				noscalable		$(date +%Y%m%d-%H%M%S)" >> $log
 				else
 					run app_create $app -s
 					run cartridge_add $cartridge_type $app_name
-					echo "$app_name		$cartridge_type			scalable			$(date +%Y%m%d-%H%M%S)" >> $log
+					echo "$app_name			$cartridge_type				scalable		$(date +%Y%m%d-%H%M%S)" >> $log
 				fi
 			done
 		done
@@ -37,11 +38,15 @@ app_create_all()
 
 . ./function.sh
 run set_running_parameter
+cycle=1
 while true;do
 	[ -d testdir ] && rm -rf testdir/* || mkdir testdir
 	cd testdir
+	echo "### Cycle $cycle start, time : $(date +%Y%m%d-%H%M%S)" |tee -a $cycle_log
 	rhc domain show -predhat|grep jenkins-1.4 > /dev/null
 	[ $? -ne 0 ] && run app_create jenkins-1.4
 	run app_create_all
+	echo "### Cycle $cycle end,time : $(date +%Y%m%d-%H%M%S), have $(($app_number+1)) apps created." |tee -a $cycle_log
 	run app_delete_all
+	((cycle+=1))
 done
