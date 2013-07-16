@@ -24,10 +24,12 @@ app_create_all()
 					run url_check $app_name
 					run cartridge_add $cartridge_type $app_name
 					run url_check $app_name
-					echo "$app_name			$cartridge_type				noscalable		$(date +%Y%m%d-%H%M%S)" >> $log
+					echo "$app_name			$cartridge_type				nonscalable		$(date +%Y%m%d-%H%M%S)" >> $log
 				else
 					run app_create $app -s
+					run url_check $app_name
 					run cartridge_add $cartridge_type $app_name
+					run url_check $app_name
 					echo "$app_name			$cartridge_type				scalable		$(date +%Y%m%d-%H%M%S)" >> $log
 				fi
 			done
@@ -45,6 +47,7 @@ while true;do
 	echo "### Cycle $cycle start, time : $(date +%Y%m%d-%H%M%S)" |tee -a $cycle_log
 	rhc domain show -predhat|grep jenkins-1.4 > /dev/null
 	[ $? -ne 0 ] && run app_create jenkins-1.4
+	echo "$app_name			jenkins-1.4				nonscalable		$(date +%Y%m%d-%H%M%S)" >> $log
 	run app_create_all
 	echo "### Cycle $cycle end,time : $(date +%Y%m%d-%H%M%S), have $(($app_number+1)) apps created." |tee -a $cycle_log
 	run app_delete_all
