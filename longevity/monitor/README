@@ -1,0 +1,18 @@
+##################################################################################
+#Firstly , The longevity.sh must me running and have generated longevity_$date.log 
+#Then run performance_monitor.sh on broker ,The longevity.sh must me running and have generated longevity_$date.log 
+#
+#how usage:
+#cd monitor
+#./performance_monitor.sh ../longevity_$date.log
+#
+##################################################################################
+
+# Logic diagram:
+performance_monitor.sh ---> Config your server number , IP and ROOT passwd, then write server.conf
+                       |
+                       + 
+                       ---> Deployment the monitor scripts(system_monitor.sh or monitor-localhost.sh)
+                       |
+                       +
+                       ---> Read app create log(such as : longevity_20130716-080438.log),if a new app created ,then run monitor script on each configed server 

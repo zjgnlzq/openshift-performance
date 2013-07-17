@@ -1,5 +1,10 @@
 #!/bin/bash
 . ../common_func.sh
+pwd=`pwd`
+#monitor_script="monitor-localhost.sh"
+monitor_script="system_monitor.sh"
+time_str=`echo $1|cut -d'_' -f2|cut -d'.' -f1`
+monitor_log="monitor_server_${time_str}.log"
 server_config()
 {
 if [ -f server.conf ];then
@@ -32,7 +37,7 @@ echo -n "If these info is all right, please input 'yes' to continue: (yes/no)"
 read yes
 if [ "$yes" = "yes" ];then
 	while read server_alias server_ip server_passwd;do
-		run scp_task "monitor-localhost.sh" $server_ip $server_passwd "/opt"
+		run scp_task "$monitor_script" $server_ip $server_passwd "/opt"
 	done < server.conf
 else 
 	echo "Please run it again!"
@@ -44,8 +49,10 @@ run server_config
 run confirm_and_deployment
 tail -f $1|while read app_info;do
 	echo_blue "New app created, app info: $app_info"
+	echo -e "\n### New app info: $app_info" >> $monitor_log
 	while read server_alias server_ip server_passwd;do
-	echo_green "####################### $server_alias INFO #######################"
-	run task_ssh_root $server_ip $server_passwd "/opt/monitor-localhost.sh"
+	echo "####################### $server_alias INFO #######################" |tee -a $monitor_log
+	task_ssh_root $server_ip $server_passwd "/opt/$monitor_script" |tee -a $monitor_log
+	sed -i  "/spawn/,/root/d" $monitor_log
 	done < server.conf
 done
