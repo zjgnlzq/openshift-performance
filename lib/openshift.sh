@@ -1,4 +1,5 @@
 #!/bin/bash
+source "${LIB_DIR}/util.sh"
 
 function create_app() {
     local app_name="$1"
