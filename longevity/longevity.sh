@@ -52,4 +52,5 @@ while true;do
 	echo "### Cycle $cycle end,time : $(date +%Y%m%d-%H%M%S), have $(($app_number+1)) apps created." |tee -a $cycle_log
 	run app_delete_all
 	((cycle+=1))
+	cd -
 done
