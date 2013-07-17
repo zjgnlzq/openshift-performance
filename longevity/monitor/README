@@ -4,7 +4,7 @@
 #
 #how usage:
 #cd monitor
-#./performance_monitor.sh ../longevity_$date.log
+#./performance_monitor.sh ../log/longevity_$date.log
 #
 ##################################################################################
 

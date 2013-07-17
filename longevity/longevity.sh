@@ -1,9 +1,16 @@
 #!/bin/bash
+. ./function.sh
+
+[ -d log ] || mkdir log
 app_type=$1
 pwd=$(pwd)
 time=$(date +%Y%m%d-%H%M%S)
-log="$pwd/${0%.*}_${time}.log"
-cycle_log="$pwd/cycle_$time.log"
+
+#log define
+log="$pwd/log/${0%.*}_${time}.log"
+cycle_log="$pwd/log/cycle_$time.log"
+#monitor_script="monitor-localhost.sh"
+monitor_script="system_monitor.sh"
 
 #no parameter
 app_create_all()
@@ -38,11 +45,66 @@ app_create_all()
 	echo_yellow "Already have $(($app_number+1)) applications"
 }
 
-. ./function.sh
+#node and borker config for monitor
+server_config()
+{
+if [ -f server.conf ];then
+	echo "Will read config from server.conf"
+else
+	echo -n "Please input the server location: 1(BeiJing), 2(US):"
+	read location
+	if [ "$location" = "1" ];then
+		passwd=redhat
+	elif [ "$location" = "2" ];then
+		passwd=dog8code
+	else
+		echo "Please setup the server's password!"
+		exit 1
+	fi
+	nodes=`mco ping|grep time|awk '{print $1}'`	
+	
+	echo "$(hostname) $(hostname) $passwd" >>server.conf
+	for node in $nodes;do
+		echo "$node $node $passwd" >>server.conf	
+	done
+fi
+}
+
+#confirm broker and node config ,and deployment script to it
+confirm_and_deployment()
+{
+while read server_alias server_ip server_passwd;do
+	echo_yellow "Confirm your $server_alias:"
+	echo "HOST: $server_alias,		IP: $server_ip,			Password: $server_passwd"
+done < server.conf
+echo_blue  "If these info is all right, please input 'yes' to continue: (yes/no)"
+read confirm
+if [ "$confirm" = "yes" ];then
+	while read server_alias server_ip server_passwd;do
+		scp_task "$monitor_script" $server_ip $server_passwd "/opt"
+	done < server.conf
+else 
+	echo "Please run it again!"
+    exit 1
+fi
+}
+start_monitor()
+{
+	cd monitor
+	server_config
+	confirm_and_deployment
+	./performance_monitor.sh ../log/${0%.*}_${time}.log  2>&1 > /dev/null &
+	cd -
+}
+
+#monitor process start
+>$log
+start_monitor
+
 run set_running_parameter
 cycle=1
 while true;do
-	[ -d testdir ] && rm -rf testdir/* || mkdir testdir
+	[ -d $pwd/testdir ] && rm -rf $pwd/testdir/* || mkdir testdir
 	cd testdir
 	echo "### Cycle $cycle start, time : $(date +%Y%m%d-%H%M%S)" |tee -a $cycle_log
 	rhc domain show -predhat|grep jenkins-1.4 > /dev/null
