@@ -1,5 +1,5 @@
 #!/bin/bash
-err_log="$(pwd)/error.log"
+err_log="$(pwd)/log/error.log"
 
 #################################################################################
 # FileName:      common_func.sh
@@ -155,8 +155,9 @@ function run()
 	r_value=$?
 	echo_blue "--------------------------Function $1 end--------------------------------"
     if [ "$r_value" -ne 0 ] ;then 
-	echo "$(date +%Y%m%d-%H%M%S)" >> $err_log
-        echo_red "$1 function running failed!" |tee -a $err_log
+	echo -n "\n $(date +%Y%m%d-%H%M%S) Failed exec:" >> $err_log
+	echo "[$(pwd)]# $*"|tee -a $err_log
+        echo_red "$1 function running failed!" 
         #runlevel|grep 5 > /dev/null && notify-send "Testing failed ..." 
         #exit 1 
     else
