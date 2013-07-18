@@ -106,7 +106,7 @@ cycle=1
 while true;do
 	[ -d $pwd/testdir ] && rm -rf $pwd/testdir/* || mkdir testdir
 	cd testdir
-	echo "### Cycle $cycle start, time : $(date +%Y%m%d-%H%M%S)" |tee -a $cycle_log
+	echo -e "\n### Cycle $cycle start, time : $(date +%Y%m%d-%H%M%S)" |tee -a $cycle_log
 	rhc domain show -predhat|grep jenkins-1.4 > /dev/null
 	[ $? -ne 0 ] && run app_create jenkins-1.4
 	echo "$app_name			jenkins-1.4				nonscalable		$(date +%Y%m%d-%H%M%S)" >> $log
