@@ -42,7 +42,7 @@ app_create_all()
 			done
 		done
 	done
-	echo_yellow "Already have $(($app_number+1)) applications"
+	echo_yellow "Already have $(($app_number)) applications"
 }
 
 #node and borker config for monitor
@@ -113,6 +113,7 @@ while true;do
 	run app_create_all
 	echo "### Cycle $cycle end,time : $(date +%Y%m%d-%H%M%S), have $(($app_number)) apps created." |tee -a $cycle_log
 	run app_delete_all
+	app_number=$(($app_number - 1))
 	((cycle+=1))
 	cd -
 done
