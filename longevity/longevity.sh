@@ -111,7 +111,7 @@ while true;do
 	[ $? -ne 0 ] && run app_create jenkins-1.4
 	echo "$app_name			jenkins-1.4				nonscalable		$(date +%Y%m%d-%H%M%S)" >> $log
 	run app_create_all
-	echo "### Cycle $cycle end,time : $(date +%Y%m%d-%H%M%S), have $(($app_number+1)) apps created." |tee -a $cycle_log
+	echo "### Cycle $cycle end,time : $(date +%Y%m%d-%H%M%S), have $(($app_number)) apps created." |tee -a $cycle_log
 	run app_delete_all
 	((cycle+=1))
 	cd -
