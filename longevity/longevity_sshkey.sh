@@ -3,10 +3,11 @@
 ssh_auth_config
 [ -f ./log ] || mkdir log
 logfile=./log/sshkey_$(date +%Y%m%d-%H%M%S).log
-
-cur_sshkey=`rhc sshkey list -l $user -p $passwd`
-
-rhc sshkey remove $cur_sshkey
+rhc sshkey list -l $user -p $passwd > /dev/null
+if [ $? -eq 0 ];then
+    cur_sshkey=`rhc sshkey list -l $user -p $passwd|grep type |awk 'print $1'`
+    rhc sshkey remove $cur_sshkey
+fi
 testname=test001
 number=0
 while ture;do 
