@@ -46,7 +46,7 @@ app_create_all()
 }
 
 #node and borker config for monitor
-server_config()
+monitor_server_config()
 {
 if [ -f server.conf ];then
 	echo "Will read config from server.conf"
@@ -91,7 +91,7 @@ fi
 start_monitor()
 {
 	cd monitor
-	server_config
+	monitor_server_config
 	confirm_and_deployment
 	./performance_monitor.sh ../log/${0%.*}_${time}.log  2>&1 > /dev/null &
 	cd -
@@ -101,6 +101,7 @@ start_monitor()
 >$log
 start_monitor
 
+run ssh_auth_config
 run set_running_parameter
 cycle=1
 while true;do
@@ -110,10 +111,10 @@ while true;do
 	rhc domain show -predhat|grep jenkins-1.4 > /dev/null
 	[ $? -ne 0 ] && run app_create jenkins-1.4
 	echo "$app_name			jenkins-1.4				nonscalable		$(date +%Y%m%d-%H%M%S)" >> $log
+	app_number=0
 	run app_create_all
 	echo "### Cycle $cycle end,time : $(date +%Y%m%d-%H%M%S), have $(($app_number)) apps created." |tee -a $cycle_log
 	run app_delete_all
-	app_number=$(($app_number - 1))
 	((cycle+=1))
 	cd -
 done

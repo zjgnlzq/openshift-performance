@@ -34,6 +34,7 @@
 #alias_remove
 #add_mysql_data
 #delete_mysql_data
+#ssh_auth_config            Config ssh and cancel the connect inquiry
 ###################################################
 
 . ./common_func.sh
@@ -136,9 +137,8 @@ app_delete()
 			}
 	wait
 EOF
-	app_number=$(($app_number - 1))
     rhc app show $1 -p${passwd} &>/dev/null
-    [ $? -ne 0 ] && value=0 || value=1
+    [ $? -ne 0 ] && value=0 && app_number=$(($app_number - 1)) || value=1
     return $value
 }
 #no parameter
@@ -424,4 +424,33 @@ expect {
 }
 sleep 1
 EOF
+}
+
+###########################################
+# Config ssh and cancel the connect inquiry
+# $0
+###########################################
+ssh_auth_config()
+{
+ssh_config=~/.ssh/config
+[ -f $ssh_config ] || touch $ssh_config
+cat <<EOF > $ssh_config
+Host broker.*.com
+    User root
+    IdentityFile ~/.ssh/libra.pem
+
+Host *.*.com
+    IdentityFile ~/.ssh/id_rsa
+    VerifyHostKeyDNS yes
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+EOF
+}
+
+###########################################
+# $0
+###########################################
+sshkey_add()
+{
+    rhc sshkey add
 }
