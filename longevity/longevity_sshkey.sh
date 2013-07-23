@@ -11,7 +11,7 @@ fi
 testname=test001
 number=0
 while true;do 
-    echo "# $number add test, date: $(date +%Y%m%d-%H%M%S)"
+    echo "# The $number times add/remove test, date: $(date +%Y%m%d-%H%M%S)" |tee -a $logfile
     rhc sshkey add $testname ~/.ssh/id_rsa.pub -l $user -p $passwd
     rhc sshkey remove $testname -l $user -p $passwd
     number=$((number + 1))
