@@ -1,4 +1,14 @@
 #!/bin/bash
+###################################### Description ####################################
+#  Create app separately with various cartridge, After all the app and cartridge combination
+#are created, then cleanup all app, this process is one cycle. 
+#
+#  We repeated this cycle, During this testing we record the error log, 
+#broker and nodes performance record.the time one app create and one cycle testing consumed,
+#And these log could help us to know or analysis the performance in a fixed environment.
+#
+#  You can define the app and cartridge types with config file AutoCreate.cfg by yourself
+#######################################################################################
 . ./function.sh
 
 [ -d log ] || mkdir log
