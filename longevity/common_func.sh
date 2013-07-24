@@ -151,7 +151,7 @@ function run()
 	echo_blue "-------------------------Function $1 start-------------------------------"
 	echo -n "[$(pwd)]#"
 	echo "$*"
-	eval "$*"
+	eval "$* 2>> $err_log"
 	r_value=$?
 	echo_blue "--------------------------Function $1 end--------------------------------"
     if [ "$r_value" -ne 0 ] ;then 
