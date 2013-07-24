@@ -43,12 +43,26 @@ function remove_cart() {
     return $?
 }
 
+function control_app() {
+    local app_name="$1"
+    local rhlogin="$2"
+    local passwd="$3"
+    local action="$4"
+    shift 4
+    local options="${@}"
+
+    echo "${action}ing ${app_name} app ..."
+    command="rhc app ${action} ${app_name} -l ${rhlogin} -p ${passwd} ${options}"
+    run_command "${command}"
+    return $?
+}
+
+
 function destroy_app() {
     local app_name="$1"
     local rhlogin="$2"
     local passwd="$3"
-    local options="$4"
-    shift 4
+    shift 3
     local options="${@}"
 
     echo "Destroying ${app_name} app ..."
@@ -57,25 +71,46 @@ function destroy_app() {
     return $?
 }
 
-get_date() {
+function get_date() {
     local date=$(date +"%Y-%m-%d-%H-%M-%S")
     echo "$date"
 }
 
-get_db_host() {
+function get_db_host() {
     local output="$1"
     echo "${output}" | grep 'Connection URL:' | grep -v 'MySQL gear-local' | awk -F'/' '{print $3}' | awk -F: '{print $1}'
     return $?
 }
 
-get_db_port() {
+function get_db_port() {
     local output="$1"
     echo "${output}" | grep 'Connection URL:' | grep -v 'MySQL gear-local' | awk -F'/' '{print $3}' | awk -F: '{print $2}'
     return $?
 }
 
-get_db_passwd() {
+function get_db_passwd() {
     local output="$1"
     echo "${output}" | grep 'Root Password:' | awk '{print $NF}'
     return $?
+}
+
+function get_libra_server() {
+    if [ -f ~/.openshift/express.conf ]; then
+        local config_file="${HOME}/.openshift/express.conf"
+        grep "^libra_server" $config_file | cut -d= -f2 | tr -d " " | tr -d "'"
+    elif [ -f /etc/openshift/express.conf ]; then
+        config_file='/etc/openshift/express.conf'
+        grep "^libra_server" $config_file | cut -d= -f2 | tr -d " " | tr -d "'"
+    else
+        echo "No found express config file !!!"
+        return 1
+    fi
+}
+
+function rest_api_force_clean_domain() {
+    local domain_name="$1"
+    local rhlogin="$2"
+    local passwd="$3"
+    command="curl -k -X DELETE -H 'Accept: application/xml' -d force=true --user ${rhlogin}:${passwd} https://$(get_libra_server)/broker/rest/domains/$domain_name"
+    run_command "${command}"
 }

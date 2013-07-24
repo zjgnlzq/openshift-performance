@@ -32,3 +32,19 @@ initial_log() {
     echo ${logfile}
 }
 
+
+ssh_config() {
+    ssh_config_file="~/.ssh/config"
+    cat <<EOF > $ssh_config
+Host broker.*.com
+    User root
+    IdentityFile ~/.ssh/libra.pem
+
+Host *.ose*.com
+    IdentityFile ~/.ssh/id_rsa
+    VerifyHostKeyDNS yes
+    StrictHostKeyChecking no
+    UserKnownHostsFile /dev/null
+EOF
+}
+
