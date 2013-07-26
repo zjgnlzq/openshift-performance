@@ -120,7 +120,7 @@ while true;do
 	cd testdir
 	echo -e "\n### Cycle $cycle start, time : $(date +%Y%m%d-%H%M%S)" |tee -a $cycle_log
 	rhc domain show -predhat|grep jenkins-1.4 > /dev/null
-	[ $? -ne 0 ] && run app_create jenkins-1.4
+	[ $? -ne 0 ] && run app_create jenkins-1.4 || break
 	echo "$app_name			jenkins-1.4				nonscalable		$(date +%Y%m%d-%H%M%S)" >> $log
 	app_number=0
 	run app_create_all 2>&1 |tee -a $exec_log

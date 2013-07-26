@@ -89,15 +89,16 @@ app_create()
 	fi	
 	echo_bold "The new create app NO. is : $app_number "
 	echo_bold "$create_command"
-	expect -f - <<EOF
-	set timeout -1
-	spawn $create_command
-	expect {
-				"Are you *(yes/no)?"	{send "yes\r";exp_continue}
-			}
-	wait
-EOF
-	rhc app show $app_name -p${passwd} &>/dev/null
+	$create_command
+###	expect -f - <<EOF
+###	set timeout -1
+###	spawn $create_command
+###	expect {
+###				"Are you *(yes/no)?"	{send "yes\r";exp_continue}
+###			}
+###	wait
+###EOF
+###	rhc app show $app_name -p${passwd} &>/dev/null
 	[ $? -eq 0 ] && value=0 || value=1
 	#[ -d $app_name ] && value=0 || value=1
 	app_number=$(($app_number + 1))
@@ -129,15 +130,16 @@ app_delete()
 {
     echo_bold "The delete app NO. is : $app_number"
 	echo_bold "rhc app delete $1 -p${passwd}"
-	expect -f - <<EOF
-	set timeout -1
-	spawn rhc app delete $1 -p${passwd} --timeout 360
-	expect {
-				"Are you *(yes|no):"	{send "yes\r";exp_continue}
-			}
-	wait
-EOF
-    rhc app show $1 -p${passwd} &>/dev/null
+	rhc app delete $1 -p${passwd} --timeout 360
+###	expect -f - <<EOF
+###	set timeout -1
+###	spawn rhc app delete $1 -p${passwd} --timeout 360
+###	expect {
+###				"Are you *(yes|no):"	{send "yes\r";exp_continue}
+###			}
+###	wait
+###EOF
+###    rhc app show $1 -p${passwd} &>/dev/null
     [ $? -ne 0 ] && value=0 && app_number=$(($app_number - 1)) || value=1
     return $value
 }
