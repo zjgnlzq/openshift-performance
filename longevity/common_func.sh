@@ -159,9 +159,10 @@ function run()
 	echo "[$(pwd)]# $*"|tee -a $err_log
         echo_red "$1 function running failed!" 
         #runlevel|grep 5 > /dev/null && notify-send "Testing failed ..." 
-        exit 1 
+        #exit 1 
+	break
     else
-        echo_green "$1 function running end!"
+        echo_green "$1 function done!"
     fi
 	echo 
 }

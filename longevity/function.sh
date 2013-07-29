@@ -130,16 +130,15 @@ app_delete()
 {
     echo_bold "The delete app NO. is : $app_number"
 	echo_bold "rhc app delete $1 -p${passwd}"
-	rhc app delete $1 -p${passwd} --timeout 360
-###	expect -f - <<EOF
-###	set timeout -1
-###	spawn rhc app delete $1 -p${passwd} --timeout 360
-###	expect {
-###				"Are you *(yes|no):"	{send "yes\r";exp_continue}
-###			}
-###	wait
-###EOF
-###    rhc app show $1 -p${passwd} &>/dev/null
+	expect -f - <<EOF
+	set timeout -1
+	spawn rhc app delete $1 -p${passwd} --timeout 360
+	expect {
+				"Are you *(yes|no):"	{send "yes\r";exp_continue}
+			}
+	wait
+EOF
+    rhc app show $1 -p${passwd} &>/dev/null
     [ $? -ne 0 ] && value=0 && app_number=$(($app_number - 1)) || value=1
     return $value
 }
