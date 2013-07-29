@@ -89,15 +89,16 @@ app_create()
 	fi	
 	echo_bold "The new create app NO. is : $app_number "
 	echo_bold "$create_command"
-	expect -f - <<EOF
-	set timeout -1
-	spawn $create_command
-	expect {
-				"Are you *(yes/no)?"	{send "yes\r";exp_continue}
-			}
-	wait
-EOF
-	rhc app show $app_name -p${passwd} &>/dev/null
+	$create_command
+###	expect -f - <<EOF
+###	set timeout -1
+###	spawn $create_command
+###	expect {
+###				"Are you *(yes/no)?"	{send "yes\r";exp_continue}
+###			}
+###	wait
+###EOF
+###	rhc app show $app_name -p${passwd} &>/dev/null
 	[ $? -eq 0 ] && value=0 || value=1
 	#[ -d $app_name ] && value=0 || value=1
 	app_number=$(($app_number + 1))

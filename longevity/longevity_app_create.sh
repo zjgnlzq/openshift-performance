@@ -19,6 +19,7 @@ time=$(date +%Y%m%d-%H%M%S)
 #log define
 log="$pwd/log/${0%.*}_${time}.log"
 cycle_log="$pwd/log/cycle_$time.log"
+exec_log="$pwd/log/exec_$time.log"
 #monitor_script="monitor-localhost.sh"
 monitor_script="system_monitor.sh"
 
@@ -119,12 +120,12 @@ while true;do
 	cd testdir
 	echo -e "\n### Cycle $cycle start, time : $(date +%Y%m%d-%H%M%S)" |tee -a $cycle_log
 	rhc domain show -predhat|grep jenkins-1.4 > /dev/null
-	[ $? -ne 0 ] && run app_create jenkins-1.4
+	[ $? -ne 0 ] && run app_create jenkins-1.4 || break
 	echo "$app_name			jenkins-1.4				nonscalable		$(date +%Y%m%d-%H%M%S)" >> $log
 	app_number=0
-	run app_create_all
+	run app_create_all 2>&1 |tee -a $exec_log
 	echo "### Cycle $cycle end,time : $(date +%Y%m%d-%H%M%S), have $(($app_number)) apps created." |tee -a $cycle_log
-	run app_delete_all
+	run app_delete_all 2>&1 |tee -a $exec_lo2>&1 |tee -a $exec_log
 	((cycle+=1))
 	cd -
 done
