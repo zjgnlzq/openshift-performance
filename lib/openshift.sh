@@ -94,6 +94,12 @@ function get_db_passwd() {
     return $?
 }
 
+function get_db_user() {
+    local output="$1"
+    echo "${output}" | grep 'Root User:' | awk '{print $NF}'
+    return $?
+}
+
 function get_libra_server() {
     if [ -f ~/.openshift/express.conf ]; then
         local config_file="${HOME}/.openshift/express.conf"
