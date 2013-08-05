@@ -46,7 +46,7 @@ CONFIG_FILE=$pwd/AutoCreate.cfg
 #time=`date +%Y%m%d-%H%M%S`
 
 user=`cat ~/.openshift/express.conf|grep default_rhlogin|awk -F= '{print $2}'`
-passwd=redhat
+passwd=jzu
 domain=`rhc domain show -predhat|sed -n 1p|awk '{print $3}'`
 app_number=`rhc domain show -p$passwd|grep  uuid|wc -l`
 broker_url=`cat ~/.openshift/express.conf|grep -i libra_server|awk -F= '{print $2}'`
@@ -149,6 +149,7 @@ app_delete_all()
 	echo_blue "All APPs: $apps"
 	value=0
 	for app in $apps;do
+		rm -rf ~/$app
 		run app_delete $app
 		[ $? -ne 0 ] && value=1 && break
 	done
